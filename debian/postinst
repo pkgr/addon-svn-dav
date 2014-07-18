@@ -1,0 +1,49 @@
+#!/bin/bash
+
+set -ex
+
+# summary of how this script can be called:
+#        * <postinst> `configure' <most-recently-configured-version>
+#        * <old-postinst> `abort-upgrade' <new version>
+#        * <conflictor's-postinst> `abort-remove' `in-favour' <package>
+#          <new-version>
+#        * <postinst> `abort-remove'
+#        * <deconfigured's-postinst> `abort-deconfigure' `in-favour'
+#          <failed-install-package> <version> `removing'
+#          <conflicting-package> <version>
+# for details, see http://www.debian.org/doc/debian-policy/ or
+# the debian-policy package
+
+APP_NAME="_APP_NAME_"
+
+# source debconf library
+. /usr/share/debconf/confmodule
+
+case "$1" in
+
+  configure)
+
+    db_get ${APP_NAME}/svn-dav/autoinstall
+
+    if [ "$RET" = "false" ]; then
+      exit 0
+    else
+      db_get ${APP_NAME}/svn-dav/repositories || true
+      svn_repositories="$RET"
+      if [ ! -d "$svn_repositories" ]; then
+	mkdir -p "$svn_repositories"
+	chown ${APP_NAME}.${APP_NAME} "$svn_repositories"
+      fi
+    fi
+  ;;
+
+  abort-upgrade|abort-remove|abort-deconfigure)
+    exit 0
+  ;;
+
+  *)
+    echo "postinst called with unknown argument \`$1'" >&2
+    exit 1
+  ;;
+esac
+

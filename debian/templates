@@ -1,0 +1,20 @@
+Template: _APP_NAME_/svn-dav/autoinstall
+Type: boolean
+Default: false
+Description: Do you want to use this wizard to help setup the SVN integration with _APP_NAME_?
+ If you want, we can automatically setup _APP_NAME_ so that it works with SVN integration over HTTP.
+ .
+ If you choose NOT to use this wizard, you will have to manually setup the SVN configuration by yourself.
+
+Template: _APP_NAME_/svn-dav/repositories
+Type: string
+Default: /var/db/_APP_NAME_/svn
+Description: Enter the path to the directory that hosts the SVN repositories:
+
+Template: _APP_NAME_/svn-dav/api-key
+Type: string
+Description: Enter the API key used to communicate with _APP_NAME_:
+ For the SVN integration to work, an API key is required.
+ .
+ If left blank, a random password will be generated for you.
+
