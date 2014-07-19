@@ -34,6 +34,7 @@ case "$1" in
 	mkdir -p "$svn_repositories"
 	chown ${APP_NAME}.${APP_NAME} "$svn_repositories"
       fi
+      echo "export SVN_REPOSITORIES=\"${svn_repositories}\"" > /etc/${APP_NAME}/conf.d/svn-dav
     fi
   ;;
 
