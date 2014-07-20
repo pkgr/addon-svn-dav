@@ -30,8 +30,6 @@ case "$1" in
       rm -f "/etc/${APP_NAME}/conf.d/svn-dav"
       rm -f "/etc/${APP_NAME}/apache2/svn-perl.conf"
       rm -f "/etc/${APP_NAME}/apache2/vhost/svn.conf"
-
-      exit 0
     else
       db_get ${APP_NAME}/svn-dav/repositories || true
       svn_repositories="$RET"
