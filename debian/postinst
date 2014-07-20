@@ -46,7 +46,7 @@ case "$1" in
       # set SYS_API_KEY, the OpenProject API key
       sys_api_key_random=$(< /dev/urandom tr -dc a-z0-9 | head -c32;echo;)
       sys_api_key=$(${CLI} config:get SYS_API_KEY || echo "${sys_api_key_random}")
-      ${CLI} config:set SYS_API_KEY="${sys_api_key}"
+      echo "export SYS_API_KEY=\"${sys_api_key}\"" > /etc/${APP_NAME}/conf.d/sys-api-key
 
       # copy OpenProject perl script for authentication
       cp -f "/opt/${APP_NAME}/extra/svn/OpenProjectAuthentication.pm" /usr/lib/perl5/Apache/
