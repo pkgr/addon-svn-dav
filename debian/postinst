@@ -26,6 +26,7 @@ case "$1" in
     db_get ${APP_NAME}/svn-dav/autoinstall
 
     if [ "$RET" = "false" ]; then
+      rm -f "/etc/${APP_NAME}/conf.d/svn-dav"
       exit 0
     else
       db_get ${APP_NAME}/svn-dav/repositories || true
