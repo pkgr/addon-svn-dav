@@ -64,11 +64,10 @@ case "$1" in
       sed -i "s|_APP_API_KEY_|${sys_api_key}|g" ${tmpfile}
       mv -f "$tmpfile" "$dst"
       chmod 0640 "$dst"
-
-      # reload apache reconfiguration
-      service apache2 reload || true
-
     fi
+
+    # reload apache reconfiguration
+    service apache2 reload || true
   ;;
 
   abort-upgrade|abort-remove|abort-deconfigure)
