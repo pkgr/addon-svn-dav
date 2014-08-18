@@ -15,6 +15,8 @@ set -e
 # the debian-policy package
 
 APP_NAME="_APP_NAME_"
+APP_USER="_APP_USER_"
+APP_GROUP="_APP_GROUP_"
 CLI="${APP_NAME}"
 
 # source debconf library
@@ -36,7 +38,7 @@ case "$1" in
 
       if [ ! -d "$svn_repositories" ]; then
 	mkdir -p "$svn_repositories"
-	chown ${APP_NAME}.${APP_NAME} "$svn_repositories"
+	chown ${APP_USER}.${APP_GROUP} "$svn_repositories"
       fi
 
       echo "export SVN_REPOSITORIES=\"${svn_repositories}\"" > /etc/${APP_NAME}/conf.d/svn-dav
