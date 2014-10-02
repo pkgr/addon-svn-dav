@@ -49,21 +49,23 @@ configure_apache2_server() {
 	local port=$(${CLI} config:get PORT || echo "6000")
 	local svn_repositories="$(wiz_get "svn-dav/repositories")"
 	local sys_api_key="$(wiz_get "svn-dav/api-key")"
+	local svn_dav_perl_conf="$SERVER_INCLUDES_DIR/svn_dav_perl.conf"
 
 	case "$OSFAMILY" in
 		"debian")
 			cp -f "${APP_HOME}/extra/svn/OpenProjectAuthentication.pm" /usr/lib/perl5/Apache/
+			echo "PerlLoadModule Apache::OpenProjectAuthentication" >> "$svn_dav_perl_conf"
 			;;
 		"redhat")
 			local perl_dir="/usr/lib64/perl5/Apache/"
 			mkdir -p $perl_dir
 			cp -f "${APP_HOME}/extra/svn/OpenProjectAuthentication.pm" "$perl_dir"
+			echo "PerlSwitches -I/usr/lib64/perl5/vendor_perl\nPerlLoadModule Apache::OpenProjectAuthentication" > "$svn_dav_perl_conf"
 			;;
 	esac
 
-	echo "PerlLoadModule Apache::OpenProjectAuthentication" > "$SERVER_INCLUDES_DIR/svn-dav-perl.conf"
-	local src="conf/vhost/svn-dav.conf"
-	local dst="$VHOST_INCLUDES_DIR/svn-dav.conf"
+	local src="conf/vhost/svn_dav.conf"
+	local dst="$VHOST_INCLUDES_DIR/svn_dav.conf"
 	tmpfile=$(mktemp)
 	cp -f "$src" "$tmpfile"
 	sed -i "s|_SVN_REPOSITORIES_|${svn_repositories}|g" ${tmpfile}
