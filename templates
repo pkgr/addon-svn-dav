@@ -1,0 +1,9 @@
+Template: svn-dav/repositories
+Type: string
+Default: /var/db/_APP_NAME_/svn
+Description: Enter the path to the directory that hosts the SVN repositories:
+
+Template: svn-dav/api-key
+Type: string
+Description: Enter the API key used to communicate with _APP_NAME_:
+ For the SVN integration to work, an API key is required.

@@ -1,0 +1,49 @@
+#!/bin/bash
+
+set -e
+
+. "${INSTALLER_DIR}/wizard"
+
+input_start() {
+	if [ "$(wiz_get "server/autoinstall")" = "skip" ] ; then
+		echo "No server installed. Skipping."
+		STATE="done"
+	else
+		STATE="params"
+	fi
+}
+
+input_params() {
+	local random_key=$(< /dev/urandom tr -dc A-Za-z0-9 | head -c32;echo;)
+	if ! wiz_get "svn-dav/api-key" &>/dev/null ; then
+		wiz_set "svn-dav/api-key" "${random_key}"
+	fi
+
+	wiz_put "svn-dav/api-key"
+	wiz_put "svn-dav/repositories"
+
+	if wiz_ask ; then
+		STATE="done"
+	else
+		echo "Aborting configuration."
+		exit 1
+	fi
+}
+
+state_machine() {
+	case "$1" in
+		"start")
+			input_start
+			;;
+		"done")
+			echo "DONE"
+			break
+			;;
+		*)
+			echo "invalid state: ${STATE}"
+			break
+			;;
+	esac
+}
+
+wizard "start"

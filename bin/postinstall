@@ -1,0 +1,95 @@
+#!/bin/bash
+
+set -e
+
+. ${INSTALLER_DIR}/wizard
+
+CLI="${APP_NAME}"
+VHOST_INCLUDES_DIR="/etc/${APP_NAME}/addons/apache2/includes/vhost"
+SERVER_INCLUDES_DIR="/etc/${APP_NAME}/addons/apache2/includes/server"
+OSFAMILY="$(wiz_fact osfamily)"
+
+create_svn_repositories() {
+	local svn_repositories="$(wiz_get "svn-dav/repositories")"
+	if [ -d "$svn_repositories" ] ; then
+		mkdir -p "$svn_repositories"
+		chown ${APP_USER}.${APP_GROUP} "$svn_repositories"
+	fi
+
+	echo "export SVN_REPOSITORIES=\"${svn_repositories}\"" > /etc/${APP_NAME}/conf.d/svn-dav
+}
+
+configure_api_key() {
+	local sys_api_key="$(wiz_get "svn-dav/api-key")"
+	echo "export SYS_API_KEY=\"${sys_api_key}\"" > /etc/${APP_NAME}/conf.d/sys-api-key
+}
+
+reload_apache2() {
+	case "$OSFAMILY" in
+		"debian")
+			service apache2 restart || true
+			;;
+		"redhat")
+			service httpd restart || true
+			;;
+	esac
+}
+
+enable_apache2_vhost_include() {
+	local output="$1"
+	chmod 0640 "$output"
+
+	if [ "$OSFAMILY" = "redhat" ] ; then
+		# deal with SELinux
+		chcon -t httpd_config_t "$dst"
+	fi
+}
+
+configure_apache2_server() {
+	local port=$(${CLI} config:get PORT || echo "6000")
+	local svn_repositories="$(wiz_get "svn-dav/repositories")"
+	local sys_api_key="$(wiz_get "svn-dav/api-key")"
+
+	case "$OSFAMILY" in
+		"debian")
+			cp -f "${APP_HOME}/extra/svn/OpenProjectAuthentication.pm" /usr/lib/perl5/Apache2/
+			;;
+		"redhat")
+			local perl_dir="/usr/lib64/perl5/Apache2/"
+			mkdir -p $perl_dir
+			cp -f "${APP_HOME}/extra/svn/OpenProjectAuthentication.pm" "$perl_dir"
+			;;
+	esac
+
+	echo "PerlLoadModule Apache::OpenProjectAuthentication" > "$SERVER_INCLUDES_DIR/svn-dav-perl.conf"
+	local src="conf/vhost/svn-dav.conf"
+	local dst="$VHOST_INCLUDES_DIR/svn-dav.conf"
+	tmpfile=$(mktemp)
+	cp -f "$src" "$tmpfile"
+	sed -i "s|_SVN_REPOSITORIES_|${svn_repositories}|g" ${tmpfile}
+	sed -i "s|_APP_URI_|http://127.0.0.1:${port}|g" ${tmpfile}
+	sed -i "s|_APP_API_KEY_|${sys_api_key}|g" ${tmpfile}
+	mv -f "$tmpfile" "$dst"
+
+	enable_apache2_vhost_include "$dst"
+
+	reload_apache2
+}
+
+case "$(wiz_get "server/autoinstall")" in
+	"skip")
+		# vhost and config removal is already taken care of by the server wizard
+		;;
+	"install")
+		configure_api_key
+		create_svn_repositories
+		case "$(wiz_get "server/variant")" in
+			"apache2")
+				configure_apache2_server
+				;;
+			*)
+				echo "Unsupported server variant."
+				;;
+		esac
+		;;
+esac
