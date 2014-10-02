@@ -35,6 +35,9 @@ state_machine() {
 		"start")
 			input_start
 			;;
+		"params")
+			input_params
+			;;
 		"done")
 			echo "DONE"
 			break
