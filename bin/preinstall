@@ -7,12 +7,19 @@ set -e
 OSFAMILY="$(wiz_fact osfamily)"
 
 install_required_dependencies_for_apache2() {
+	local dependencies=""
 	case "$OSFAMILY" in
 		"debian")
-			apt-get install -y --force-yes subversion libapache2-mod-perl2 libapache2-svn
+			dependencies="subversion libapache2-mod-perl2 libapache2-svn"
+			for dependency in $dependencies ; do
+				wiz_check_package "$dependency" || apt-get install -y "$dependency"
+			done
 			;;
 		"redhat")
-			yum install -y mod_dav_svn subversion mod_perl perl-Digest-SHA perl-HTTP-Message perl-libwww-perl
+			dependencies="mod_dav_svn subversion mod_perl perl-Digest-SHA perl-HTTP-Message perl-libwww-perl"
+			for dependency in $dependencies ; do
+				wiz_check_package "$dependency" || yum install -y "$dependency"
+			done
 			;;
 	esac
 }
