@@ -11,7 +11,7 @@ OSFAMILY="$(wiz_fact osfamily)"
 
 create_svn_repositories() {
 	local svn_repositories="$(wiz_get "svn-dav/repositories")"
-	if [ -d "$svn_repositories" ] ; then
+	if [ ! -d "$svn_repositories" ] ; then
 		mkdir -p "$svn_repositories"
 		chown ${APP_USER}.${APP_GROUP} "$svn_repositories"
 	fi
