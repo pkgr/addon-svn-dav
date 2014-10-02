@@ -2,4 +2,6 @@
 
 set -e
 
+# yum install mod_dav_svn subversion mod_perl
+
 exit 0
