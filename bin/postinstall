@@ -52,10 +52,10 @@ configure_apache2_server() {
 
 	case "$OSFAMILY" in
 		"debian")
-			cp -f "${APP_HOME}/extra/svn/OpenProjectAuthentication.pm" /usr/lib/perl5/Apache2/
+			cp -f "${APP_HOME}/extra/svn/OpenProjectAuthentication.pm" /usr/lib/perl5/Apache/
 			;;
 		"redhat")
-			local perl_dir="/usr/lib64/perl5/Apache2/"
+			local perl_dir="/usr/lib64/perl5/Apache/"
 			mkdir -p $perl_dir
 			cp -f "${APP_HOME}/extra/svn/OpenProjectAuthentication.pm" "$perl_dir"
 			;;
