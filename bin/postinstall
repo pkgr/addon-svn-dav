@@ -17,6 +17,11 @@ create_svn_repositories() {
 	fi
 
 	echo "export SVN_REPOSITORIES=\"${svn_repositories}\"" > /etc/${APP_NAME}/conf.d/svn-dav
+
+	if [ "$OSFAMILY" = "redhat" ] ; then
+		chcon -R -h -t httpd_sys_content_t "$svn_repositories"
+		chcon -R -h -t httpd_sys_rw_content_t "$svn_repositories"
+	fi
 }
 
 configure_api_key() {
