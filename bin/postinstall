@@ -54,13 +54,16 @@ configure_apache2_server() {
 	case "$OSFAMILY" in
 		"debian")
 			cp -f "${APP_HOME}/extra/svn/OpenProjectAuthentication.pm" /usr/lib/perl5/Apache/
-			echo "PerlLoadModule Apache::OpenProjectAuthentication" >> "$svn_dav_perl_conf"
+			echo "PerlLoadModule Apache::OpenProjectAuthentication" > "$svn_dav_perl_conf"
 			;;
 		"redhat")
 			local perl_dir="/usr/lib64/perl5/Apache/"
 			mkdir -p $perl_dir
 			cp -f "${APP_HOME}/extra/svn/OpenProjectAuthentication.pm" "$perl_dir"
-			echo "PerlSwitches -I/usr/lib64/perl5/vendor_perl\nPerlLoadModule Apache::OpenProjectAuthentication" > "$svn_dav_perl_conf"
+			cat - <<SERVER_CONF > "$svn_dav_perl_conf"
+PerlSwitches -I/usr/lib64/perl5/vendor_perl
+PerlLoadModule Apache::OpenProjectAuthentication
+SERVER_CONF
 			;;
 	esac
 
