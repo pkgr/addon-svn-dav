@@ -16,7 +16,7 @@ create_svn_repositories() {
 		chown ${APP_USER}.${APP_GROUP} "$svn_repositories"
 	fi
 
-	echo "export SVN_REPOSITORIES=\"${svn_repositories}\"" > /etc/${APP_NAME}/conf.d/svn-dav
+	${CLI} config:set SVN_REPOSITORIES="$svn_repositories"
 
 	if [ "$OSFAMILY" = "redhat" ] ; then
 		chcon -R -h -t httpd_sys_content_t "$svn_repositories"
@@ -26,7 +26,7 @@ create_svn_repositories() {
 
 configure_api_key() {
 	local sys_api_key="$(wiz_get "svn-dav/api-key")"
-	echo "export SYS_API_KEY=\"${sys_api_key}\"" > /etc/${APP_NAME}/conf.d/sys-api-key
+	${CLI} config:set SYS_API_KEY="${sys_api_key}"
 }
 
 reload_apache2() {
