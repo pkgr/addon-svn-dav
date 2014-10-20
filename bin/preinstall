@@ -16,7 +16,7 @@ install_required_dependencies_for_apache2() {
 			done
 			;;
 		"redhat")
-			dependencies="mod_dav_svn subversion mod_perl perl-Digest-SHA perl-HTTP-Message perl-libwww-perl"
+			dependencies="mod_dav_svn subversion mod_perl perl-Digest-SHA perl-libwww-perl"
 			for dependency in $dependencies ; do
 				wiz_check_package "$dependency" || yum install -y "$dependency"
 			done
