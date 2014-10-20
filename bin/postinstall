@@ -19,8 +19,8 @@ create_svn_repositories() {
 	${CLI} config:set SVN_REPOSITORIES="$svn_repositories"
 
 	if [ "$OSFAMILY" = "redhat" ] ; then
-		chcon -R -h -t httpd_sys_content_t "$svn_repositories"
-		chcon -R -h -t httpd_sys_rw_content_t "$svn_repositories"
+		chcon -R -h -t httpd_sys_content_t "$svn_repositories" || true
+		chcon -R -h -t httpd_sys_rw_content_t "$svn_repositories" || true
 	fi
 }
 
@@ -46,7 +46,7 @@ enable_apache2_vhost_include() {
 
 	if [ "$OSFAMILY" = "redhat" ] ; then
 		# deal with SELinux
-		chcon -t httpd_config_t "$dst"
+		chcon -t httpd_config_t "$dst" || true
 	fi
 }
 
