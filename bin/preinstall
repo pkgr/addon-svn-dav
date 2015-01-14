@@ -21,6 +21,12 @@ install_required_dependencies_for_apache2() {
 				wiz_check_package "$dependency" || yum install -y "$dependency"
 			done
 			;;
+		"suse")
+			dependencies="subversion mod_perl perl-Digest-SHA1 perl-libwww-perl"
+			for dependency in $dependencies ; do
+				wiz_check_package "$dependency" || zypper install -y "$dependency"
+			done
+			;;
 	esac
 }
 

@@ -70,6 +70,12 @@ PerlSwitches -I/usr/lib64/perl5/vendor_perl
 PerlLoadModule Apache::OpenProjectAuthentication
 SERVER_CONF
 			;;
+		"suse")
+			local perl_version="$(perl -e 'print substr $^V, 1;')"
+			local perl_dir="/usr/lib/perl5/vendor_perl/${perl_version}/Apache"
+			cp -f "${APP_HOME}/extra/svn/OpenProjectAuthentication.pm" "$perl_dir"
+			echo "PerlLoadModule Apache::OpenProjectAuthentication" > "$svn_dav_perl_conf"
+			;;
 	esac
 
 	local src="conf/vhost/svn_dav.conf"
