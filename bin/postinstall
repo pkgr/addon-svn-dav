@@ -31,7 +31,7 @@ configure_api_key() {
 
 reload_apache2() {
 	case "$OSFAMILY" in
-		"debian")
+		"debian"|"suse")
 			service apache2 restart || true
 			;;
 		"redhat")
