@@ -26,6 +26,8 @@ install_required_dependencies_for_apache2() {
 			for dependency in $dependencies ; do
 				wiz_check_package "$dependency" || zypper install -y "$dependency"
 			done
+			a2enmod perl
+			a2enmod dav
 			;;
 	esac
 }
