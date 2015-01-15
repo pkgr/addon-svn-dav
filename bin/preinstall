@@ -22,7 +22,7 @@ install_required_dependencies_for_apache2() {
 			done
 			;;
 		"suse")
-			dependencies="subversion apache2-mod_perl perl-Digest-SHA1 perl-libwww-perl"
+			dependencies="subversion subversion-server apache2-mod_perl perl-Digest-SHA1 perl-libwww-perl"
 			for dependency in $dependencies ; do
 				wiz_check_package "$dependency" || zypper install -y "$dependency"
 			done
