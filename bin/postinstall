@@ -73,6 +73,7 @@ SERVER_CONF
 		"suse")
 			local perl_version="$(perl -e 'print substr $^V, 1;')"
 			local perl_dir="/usr/lib/perl5/vendor_perl/${perl_version}/Apache"
+			mkdir -p "$perl_dir"
 			cp -f "${APP_HOME}/extra/svn/OpenProjectAuthentication.pm" "$perl_dir"
 			echo "PerlLoadModule Apache::OpenProjectAuthentication" > "$svn_dav_perl_conf"
 			;;
