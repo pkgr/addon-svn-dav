@@ -58,6 +58,7 @@ configure_apache2_server() {
 
 	case "$OSFAMILY" in
 		"debian")
+			mkdir -p /usr/lib/perl5/Apache/
 			cp -f "${APP_HOME}/extra/svn/OpenProjectAuthentication.pm" /usr/lib/perl5/Apache/
 			echo "PerlLoadModule Apache::OpenProjectAuthentication" > "$svn_dav_perl_conf"
 			;;
